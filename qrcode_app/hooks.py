@@ -6,6 +6,15 @@ app_email = "rahulkvga@gmail.com"
 app_license = "mit"
 # required_apps = []
 
+
+
+
+doc_events = {
+    "Sales Invoice": {
+        "on_submit": "qrcode_app.customqr.generate_qr_code",
+        "onload": "qrcode_app.customqr.get_imagepath"
+    }
+}
 # Includes in <head>
 # ------------------
 
