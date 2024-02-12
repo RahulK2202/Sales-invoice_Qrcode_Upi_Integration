@@ -79,7 +79,13 @@ from io import BytesIO
 
 @frappe.whitelist()
 def generate_qr_code(doc, event):
-    upi_id = "yourapi"
+    # upi_id = frappe.get_value("Upi Settings",upi_id)
+    settings=frappe.get_doc("Upi Settings", "Upi Settings")
+    upi_id=settings.get_password("upi_id")
+ 
+
+
+    # upi_id = "yourapi"
     upi_url=f"upi://pay?pa={upi_id}&pn=FRESH%20HOOKS%20ENTERPRISE&am={doc.grand_total}&tn=InvoicePayment&cu=INR"
     shortener = frappe.new_doc('Shorter Url')  
     short=validating_shortner()
