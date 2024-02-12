@@ -99,10 +99,10 @@ def generate_qr_code(doc, event):
     url_short = "".join([short])
     qr_code_short = get_url(url_short)
     qr_code = qrcode_get(qr_code_short)
-    # published = True
-    # route = url_short
+    published = True
+    route = url_short
 
-    # new_doc.
+   
     shortener.long_url=upi_url
     shortener.short_url=get_url(url_short)
     shortener.qr_code=qr_code
