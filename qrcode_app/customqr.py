@@ -80,45 +80,46 @@ from io import BytesIO
 @frappe.whitelist()
 def generate_qr_code(doc, event):
     # upi_id = frappe.get_value("Upi Settings",upi_id)
-    settings=frappe.get_doc("Upi Settings", "Upi Settings")
-    upi_id=settings.get_password("upi_id")
- 
-
-
-    # upi_id = "yourapi"
-    upi_url=f"upi://pay?pa={upi_id}&pn=FRESH%20HOOKS%20ENTERPRISE&am={doc.grand_total}&tn=InvoicePayment&cu=INR"
-    shortener = frappe.new_doc('Shorter Url')  
-    short=validating_shortner()
 
     try:
-        docs = frappe.get_value("Shorter Url", {"short_url": short}, "name")
-        if docs:
-            while True:
+        try:
+            settings=frappe.get_doc("Upi Settings", "Upi Settings")
+            upi_id=settings.get_password("upi_id")
+
+            upi_url=f"upi://pay?pa={upi_id}&pn=FRESH%20HOOKS%20ENTERPRISE&am={doc.grand_total}&tn=InvoicePayment&cu=INR"
+            shortener = frappe.new_doc('Shorter Url')  
+            short=validating_shortner()
+
+            try:
                 docs = frappe.get_value("Shorter Url", {"short_url": short}, "name")
                 if docs:
-                    short=validating_shortner()
-                else:
-                    break
+                    while True:
+                        docs = frappe.get_value("Shorter Url", {"short_url": short}, "name")
+                        if docs:
+                            short=validating_shortner()
+                        else:
+                            break
 
-    except:
-        pass                    
-    url_short = "".join([short])
-    qr_code_short = get_url(url_short)
-    qr_code = qrcode_get(qr_code_short)
-    # published = True
-    # route = url_short
+            except:
+                pass                    
+            url_short = "".join([short])
+            qr_code_short = get_url(url_short)
+            qr_code = qrcode_get(qr_code_short)
 
-   
-    shortener.long_url=upi_url
-    shortener.short_url=get_url(url_short)
-    shortener.qr_code=qr_code
-    shortener.published = True
-    shortener.route = url_short
+            shortener.long_url=upi_url
+            shortener.short_url=get_url(url_short)
+            shortener.qr_code=qr_code
+            shortener.published = True
+            shortener.route = url_short
 
-    shortener.insert()
-    doc.custom_shortner_qr_code=shortener
-    doc.save()
-    return shortener
+            shortener.insert()
+            doc.custom_shortner_qr_code=shortener
+            doc.save()
+            return shortener
+        except Exception as e :
+            frappe.throw("Error",e)
+    except :
+        frappe.throw("something wrong happend, please refresh")
 def validating_shortner():
     random_code = random_string(5)
     return random_code
