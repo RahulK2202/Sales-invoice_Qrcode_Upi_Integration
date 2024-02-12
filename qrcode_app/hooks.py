@@ -8,13 +8,44 @@ app_license = "mit"
 
 
 
+fixtures=["Testdoc"]
+
+
 
 doc_events = {
     "Sales Invoice": {
         "on_submit": "qrcode_app.customqr.generate_qr_code",
         "onload": "qrcode_app.customqr.get_imagepath"
     }
+
 }
+
+
+
+website_route_rules = [
+    # match any short URL with 5 characters
+    {"from_route": "/([a-zA-Z0-9]{5})", "to_route": "qrcode_app.customqr.redirect_to_longurl"}
+]
+
+    # "Shorter Url": {
+    #     # specify the event you want to hook
+    #     "on_update": [
+    #         # specify the function you want to execute
+    #         "qrcode_app.customqr.handle_short_url"
+    #     ]
+    # }
+
+# routes = [
+#     {"route": "/short/<short_url>", "method": "GET", "handler": "qrcode_app.routes.redirect_to_long_url"}
+# ]
+
+
+# qrcode_app/hooks.py
+
+
+
+
+
 # Includes in <head>
 # ------------------
 
