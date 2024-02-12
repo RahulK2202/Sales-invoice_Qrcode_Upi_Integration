@@ -21,12 +21,10 @@ doc_events = {
 }
 
 
-
-website_route_rules = [
-    # match any short URL with 5 characters
-    {"from_route": "/([a-zA-Z0-9]{5})", "to_route": "qrcode_app.customqr.redirect_to_longurl"}
-]
-
+# website_redirects = [
+#     # use regex to match any short URL
+#     { "source": "/([A-Za-z0-9]{5})", "target": "qrcode_app.customqr.get_long_url?short_url=\\1" }
+# ]
     # "Shorter Url": {
     #     # specify the event you want to hook
     #     "on_update": [

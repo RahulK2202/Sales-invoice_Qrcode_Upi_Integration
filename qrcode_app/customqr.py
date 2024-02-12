@@ -79,8 +79,8 @@ from io import BytesIO
 
 @frappe.whitelist()
 def generate_qr_code(doc, event):
-    upi_id = "rahuljcet95@okaxis"
-    upi_url=f"upi://pay?pa={upi_id}&am={doc.grand_total}&tn=InvoicePayment&cu=INR"
+    upi_id = "yourapi"
+    upi_url=f"upi://pay?pa={upi_id}&pn=FRESH%20HOOKS%20ENTERPRISE&am={doc.grand_total}&tn=InvoicePayment&cu=INR"
     shortener = frappe.new_doc('Shorter Url')  
     short=validating_shortner()
 
@@ -99,13 +99,16 @@ def generate_qr_code(doc, event):
     url_short = "".join([short])
     qr_code_short = get_url(url_short)
     qr_code = qrcode_get(qr_code_short)
-    published = True
-    route = url_short
+    # published = True
+    # route = url_short
 
    
     shortener.long_url=upi_url
     shortener.short_url=get_url(url_short)
     shortener.qr_code=qr_code
+    shortener.published = True
+    shortener.route = url_short
+
     shortener.insert()
     doc.custom_shortner_qr_code=shortener
     doc.save()
@@ -141,15 +144,12 @@ def get_imagepath(doc, event):
 
 
 @frappe.whitelist()
-def redirect_to_longurl():
-    # get the short URL from the request path
-    short_url = frappe.request.path[1:]
-    # get the Shorter Url document from the database
-    shortener = frappe.get_doc('Shorter Url', {'short_url': short_url})
-    # get the long URL from the Shorter Url document
-    long_url = shortener.long_url
-    # redirect to the long URL with a 301 response
-    frappe.redirect_to(long_url, permanent=True)
+def get_long_url(short_url):
+    # get the long URL from the Shorter Url doctype
+    long_url = frappe.db.get_value("Shorter Url", {"short_url": short_url}, "long_url")
+    # return the long URL as a response
+    return long_url
+
 
 
 
