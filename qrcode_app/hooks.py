@@ -25,6 +25,7 @@ doc_events = {
 #     # use regex to match any short URL
 #     { "source": "/([A-Za-z0-9]{5})", "target": "qrcode_app.customqr.get_long_url?short_url=\\1" }
 # ]
+
     # "Shorter Url": {
     #     # specify the event you want to hook
     #     "on_update": [
