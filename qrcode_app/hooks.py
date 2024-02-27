@@ -6,9 +6,10 @@ app_email = "rahulkvga@gmail.com"
 app_license = "mit"
 # required_apps = []
 
-
-
-fixtures=["Testdoc"]
+fixtures = [
+    {"dt": "Custom Field", "filters": [["module", "=", "Qrcode sales invoice generator"]],
+    "prefix": "qrcode_custom_fields"}
+]
 
 
 
