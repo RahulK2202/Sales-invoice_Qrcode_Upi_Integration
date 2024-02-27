@@ -8,7 +8,9 @@ app_license = "mit"
 
 fixtures = [
     {"dt": "Custom Field", "filters": [["module", "=", "Qrcode sales invoice generator"]],
-    "prefix": "qrcode_custom_fields"}
+    "prefix": "qrcode_custom_fields"},
+    {"dt": "DocType", "filters": [["module", "=", "Qrcode sales invoice generator"]],
+    "prefix": "qrcode_custom_doctypes"},
 ]
 
 
