@@ -11,6 +11,8 @@ fixtures = [
     "prefix": "qrcode_custom_fields"},
     {"dt": "DocType", "filters": [["module", "=", "Qrcode sales invoice generator"]],
     "prefix": "qrcode_custom_doctypes"},
+    {"dt": "Client Script", "filters": [["module", "=", "Qrcode sales invoice generator"]],
+    "prefix": "qrcode_client_scripts"}
 ]
 
 
@@ -18,7 +20,8 @@ fixtures = [
 doc_events = {
     "Sales Invoice": {
         "on_submit": "qrcode_app.customqr.generate_qr_code",
-        "onload": "qrcode_app.customqr.get_imagepath"
+        "onload": "qrcode_app.customqr.get_imagepath",
+
     }
 
 }

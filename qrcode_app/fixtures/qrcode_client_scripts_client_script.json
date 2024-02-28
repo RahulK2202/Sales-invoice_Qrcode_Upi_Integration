@@ -1,0 +1,13 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sales Invoice",
+  "enabled": 1,
+  "modified": "2024-02-28 09:36:44.183602",
+  "module": "Qrcode sales invoice generator",
+  "name": "Whatsapp_custom_button_SI",
+  "script": "frappe.ui.form.on('Sales Invoice', {\n    refresh: function(frm) {\n    \n        const qrCodeValue = frm.doc.custom_shortner_qr_code;\n\n        if (qrCodeValue) {\n   \n            frm.add_custom_button(__('Whatsapp'), function() {\n      \n            });\n        }\n    }\n});\n",
+  "view": "Form"
+ }
+]
