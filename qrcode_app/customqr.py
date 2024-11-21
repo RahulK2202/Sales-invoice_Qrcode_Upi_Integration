@@ -13,68 +13,6 @@ from PIL import Image
 import base64, os
 from io import BytesIO
 
-# @frappe.whitelist()
-# def generate_qr_code(doc, event):
-#     # use doc instead of sale_invoice
-
-#     print(doc,"doc is hereeee")
-#     print("coming...................................>")
-#     # UPI ID for the payment
-#     upi_id = "yourupi@ybl"
-
-#     upi_url=f"upi://pay?pa={upi_id}&pn=bcbcb&am={doc.grand_total}&tn=InvoicePayment&cu=INR"
-#     shortener = frappe.new_doc('Shortener')
-    
-#     short=validating_shortner()
-
-#     try:
-#         docs = frappe.get_value("Shortener", {"short_url": short}, "name")
-#         if docs:
-#             while True:
-#                 docs = frappe.get_value("Shortener", {"short_url": short}, "name")
-#                 if docs:
-#                     short=validating_shortner()
-#                 else:
-#                     break
-
-#     except:
-#         pass                    
-
-
-#     url_short = "".join([short])
-    
-#     print(url_short, "url shorttttttt")
-
-#     qr_code_short = get_url(url_short)
-#     print(qr_code_short,"shortner did")
-#     qr_code = get_qrcode(qr_code_short)
-#     print("before qr code")
-#     print(qr_code)
-#     print("after qr codeeee")
-#     published = True
-#     route = url_short
-
-#     # new_doc.
-#     print("upi_url....................")
-#     print(upi_url,"this is upi")
-#     shortener.long_url=upi_url
- 
-    
-
-#     print(get_url(url_short),"short_url")
-#     shortener.short_url=get_url(url_short)
-#     print("yessssssssssssssssssssssssssssssss")
-#     shortener.qr_code=qr_code
-
-#     shortener.insert()
-
-#     doc.custom_shortner_qr_code=shortener
-
-#     doc.save()
-#     print("success ........................................>")
-#     # return the QR code image URL instead of the shortener object
-#     return shortener.qr_code
-
 
 
 @frappe.whitelist()
@@ -82,7 +20,7 @@ def generate_qr_code(doc, event):
     # upi_id = frappe.get_value("Upi Settings",upi_id)
 
     try:
-        try:
+        # try:
             settings=frappe.get_doc("Upi Settings", "Upi Settings")
             upi_id=settings.get_password("upi_id")
 
@@ -103,23 +41,47 @@ def generate_qr_code(doc, event):
             except:
                 pass                    
             url_short = "".join([short])
-            qr_code_short = get_url(url_short)
+            # qr_code_short = get_url(url_short)
+            qr_code_short = get_custom_url_without_port(url_short)
+            print(qr_code_short,"qr_code_shortqr_code_short................")
             qr_code = qrcode_get(qr_code_short)
 
             shortener.long_url=upi_url
-            shortener.short_url=get_url(url_short)
+            shortener.short_url=get_custom_url_without_port(url_short)
             shortener.qr_code=qr_code
             shortener.published = True
             shortener.route = url_short
 
             shortener.insert()
-            doc.custom_shortner_qr_code=shortener
-            doc.save()
+            if hasattr(doc, "custom_shortner_qr_code"):
+                frappe.db.set_value(doc.doctype, doc.name, "custom_shortner_qr_code", shortener.name)
+            # doc.custom_shortner_qr_code=shortener
+            # doc.save()
             return shortener
-        except Exception as e :
-            frappe.throw("Error",e)
-    except :
-        frappe.throw("something wrong happend, please refresh")
+    except Exception as e:
+        frappe.throw(f"Error: {str(e)}")
+
+
+
+
+
+def get_custom_url_without_port(short_url):
+    # Manually construct the URL without port
+    site_url = frappe.utils.get_url()
+    print(site_url,"site_url.............")
+    parsed_url = frappe.utils.urlparse(site_url)
+    print(parsed_url,"parsed_url.................")
+    url_without_port = f"{parsed_url.scheme}://{parsed_url.hostname}/{short_url}"
+    print(url_without_port,"url_without_port........")
+    return url_without_port
+
+
+
+
+
+
+
+        
 def validating_shortner():
     random_code = random_string(5)
     return random_code
@@ -141,6 +103,7 @@ def qrcode_get(input_data):
 
 @frappe.whitelist()
 def get_imagepath(doc, event):
+    print("hello loading")
     if  doc.custom_shortner_qr_code:
         shortener = frappe.get_doc('Shorter Url', doc.custom_shortner_qr_code)
         qr_code = shortener.qr_code
